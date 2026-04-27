@@ -2,12 +2,12 @@ from pydantic import BaseModel, Field, EmailStr, ValidationError, model_validato
 
 
 class Address(BaseModel):
-    city: str = Field(..., min_length=2)
+    city: str = Field(min_length=2)
     street: str = Field(..., min_length=3)
     house_number: int = Field(..., gt=0)
 
 class User(BaseModel):
-    name: str = Field(..., pattern="^[A-Za-z ]{2,}$")
+    name: str = Field(pattern=r"^[A-Za-z ]{2,}$")
     age: int = Field(..., gt=0, le=120)
     email: EmailStr
     is_employed: bool
@@ -24,7 +24,7 @@ def registration(json_input: str):
         user = User.model_validate_json(json_input, strict=True)
         return user.model_dump_json(indent=4)
     except ValidationError as e:
-        return f"Validation error:\n{e}"
+        return e.json(indent=4)
     
 # ТЕСТОВЫЕ ДАННЫЕ:    
 
