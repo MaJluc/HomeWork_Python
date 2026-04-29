@@ -61,12 +61,9 @@ with Session() as session:
 # ЗАДАЧА 2 — ЧТЕНИЕ ДАННЫХ
 # =========================================
 with Session() as session:
-    categories = session.query(Category).all()
-
-    for category in categories:
-        print(f"\nКатегория: {category.name}")
-        for product in category.products:
-            print(f" - {product.name}: {product.price}")
+    data = session.query(Category, Product).join(Product).all()
+    for category, product in data:
+        print(f"Категория: {category.name} | Продукт: {product.name}: {product.price}")
 
 
 # ЗАДАЧА 3 — ОБНОВЛЕНИЕ ДАННЫХ
@@ -87,7 +84,7 @@ with Session() as session:
     result = (
         session.query(Category.name, func.count(Product.id))
         .join(Product)
-        .group_by(Category.id)
+        .group_by(Category.name)
         .all()
     )
 
